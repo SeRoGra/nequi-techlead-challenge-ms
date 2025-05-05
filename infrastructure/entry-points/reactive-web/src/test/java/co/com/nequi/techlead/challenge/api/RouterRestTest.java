@@ -1,7 +1,5 @@
 package co.com.nequi.techlead.challenge.api;
 
-//import co.com.nequi.techlead.challenge.api.handler.Handler;
-//import co.com.nequi.techlead.challenge.api.router.RouterRest;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,14 +8,14 @@ import org.springframework.http.MediaType;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.web.reactive.server.WebTestClient;
 
-/*@ContextConfiguration(classes = {RouterRest.class, Handler.class})
+//@ContextConfiguration(classes = {RouterRest.class, Handler.class})
 @WebFluxTest
 class RouterRestTest {
 
     @Autowired
     private WebTestClient webTestClient;
 
-    @Test
+    //@Test
     void testListenGETUseCase() {
         webTestClient.get()
                 .uri("/api/usecase/path")
@@ -31,7 +29,7 @@ class RouterRestTest {
                 );
     }
 
-    @Test
+    //@Test
     void testListenGETOtherUseCase() {
         webTestClient.get()
                 .uri("/api/otherusercase/path")
@@ -45,7 +43,7 @@ class RouterRestTest {
                 );
     }
 
-    @Test
+    //@Test
     void testListenPOSTUseCase() {
         webTestClient.post()
                 .uri("/api/usecase/otherpath")
@@ -59,4 +57,4 @@ class RouterRestTest {
                         }
                 );
     }
-}*/
+}
