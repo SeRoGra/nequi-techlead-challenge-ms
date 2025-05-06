@@ -4,8 +4,8 @@ import co.com.nequi.techlead.challenge.model.site.Site;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
-public interface SiteRepository {
-    Flux<Site> getSites();
-    Mono<Site> createSite(Integer brandId, String name);
-    Mono<Site> updateSite(String id, String name);
+public interface SiteGateway {
+    Flux<Site> getAllSites();
+    Mono<Site> createSite(String name, Integer brandId);
+    Mono<Site> updateSite(Integer id, String name);
 }

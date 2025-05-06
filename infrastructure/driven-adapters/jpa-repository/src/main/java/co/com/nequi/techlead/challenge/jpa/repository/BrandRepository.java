@@ -4,5 +4,5 @@ import co.com.nequi.techlead.challenge.jpa.entity.BrandEntity;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.repository.query.QueryByExampleExecutor;
 
-public interface BrandJPARepository extends CrudRepository<BrandEntity, Integer>, QueryByExampleExecutor<BrandEntity> {
+public interface BrandRepository extends CrudRepository<BrandEntity, Integer>, QueryByExampleExecutor<BrandEntity> {
 }

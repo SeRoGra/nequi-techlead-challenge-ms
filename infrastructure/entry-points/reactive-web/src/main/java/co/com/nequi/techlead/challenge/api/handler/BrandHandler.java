@@ -1,7 +1,7 @@
 package co.com.nequi.techlead.challenge.api.handler;
 
-import co.com.nequi.techlead.challenge.api.dto.CreateBrandRequest;
-import co.com.nequi.techlead.challenge.api.dto.UpdateBrandRequest;
+import co.com.nequi.techlead.challenge.api.dto.brand.CreateBrandRequest;
+import co.com.nequi.techlead.challenge.api.dto.brand.UpdateBrandRequest;
 import co.com.nequi.techlead.challenge.model.brand.Brand;
 import co.com.nequi.techlead.challenge.usecase.brandsmanagement.BrandManagementUseCase;
 import lombok.RequiredArgsConstructor;
