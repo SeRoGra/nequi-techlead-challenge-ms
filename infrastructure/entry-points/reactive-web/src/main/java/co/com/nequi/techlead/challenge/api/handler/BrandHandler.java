@@ -11,6 +11,7 @@ import org.springframework.web.reactive.function.server.ServerResponse;
 import reactor.core.publisher.Mono;
 
 import static co.com.nequi.techlead.challenge.api.enums.PathParam.BRAND_ID;
+import static co.com.nequi.techlead.challenge.api.utils.PathParamValidator.validateRequiredParam;
 
 @Component
 @RequiredArgsConstructor
@@ -31,10 +32,10 @@ public class BrandHandler {
     }
 
     public Mono<ServerResponse> updateBrand(ServerRequest serverRequest) {
-        String brandId = serverRequest.pathVariable(BRAND_ID.getName());
+        Integer brandId = validateRequiredParam(BRAND_ID.getName(), serverRequest.pathVariable(BRAND_ID.getName()));
         return serverRequest.bodyToMono(UpdateBrandRequest.class)
                 .map(UpdateBrandRequest::getName)
-                .flatMap(name -> brandManagementUseCase.updateBrand(Integer.valueOf(brandId), name))
+                .flatMap(name -> brandManagementUseCase.updateBrand(brandId, name))
                 .flatMap(brand -> ServerResponse.ok().bodyValue(brand));
     }
 }

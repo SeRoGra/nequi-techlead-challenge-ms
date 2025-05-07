@@ -32,12 +32,12 @@ public class ProductManagementUseCase {
 
 
     public Mono<Product> updateProduct(UpdateProductCommand command) {
-        return siteManagementUseCase.getSiteByIdAndBrandId(command.getBrandId(), command.getSiteId())
-                .map(site -> Product.builder()
-                        .id(command.getProductId())
+        return getProductById(command.getProductId())
+                .flatMap(product ->  checkIfProductBelongToSite(
+                        product, command.getBrandId(), command.getSiteId()))
+                .map(product -> product.toBuilder()
                         .name(command.getName())
                         .stock(command.getStock())
-                        .site(site)
                         .build())
                 .flatMap(productGateway::updateProduct);
     }
