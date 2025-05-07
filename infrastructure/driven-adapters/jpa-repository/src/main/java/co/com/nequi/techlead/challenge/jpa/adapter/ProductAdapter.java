@@ -5,7 +5,6 @@ import co.com.nequi.techlead.challenge.jpa.helper.AdapterOperations;
 import co.com.nequi.techlead.challenge.jpa.repository.ProductRepository;
 import co.com.nequi.techlead.challenge.model.product.gateways.ProductGateway;
 import co.com.nequi.techlead.challenge.model.product.Product;
-import co.com.nequi.techlead.challenge.model.product.gateways.ProductGateway;
 import lombok.extern.slf4j.Slf4j;
 import org.reactivecommons.utils.ObjectMapper;
 import org.springframework.stereotype.Repository;
@@ -23,26 +22,27 @@ public class ProductAdapter extends AdapterOperations<Product, ProductEntity, In
 
     @Override
     public Mono<Product> createProduct(Product product) {
-        return Mono.defer(() -> Mono.just(product));
+        return Mono.defer(() -> Mono.just(save(product)));
+    }
+
+    public Mono<Product> updateProduct(Product product) {
+        return Mono.defer(() -> Mono.just(save(product)));
     }
 
     @Override
-    public Mono<Product> updateProductName(String productId, String name) {
-        return null;
+    public Mono<Void> deleteProduct(Integer productId) {
+        return Mono.fromRunnable(() -> repository.deleteById(productId));
     }
 
     @Override
-    public Mono<Product> updateProductStock(String productId, Integer stock) {
-        return null;
+    public Mono<Product> getProductById(Integer productId) {
+        return Mono.justOrEmpty(findById(productId));
     }
 
     @Override
-    public Mono<Product> deleteProduct(String brandId, String siteId, String productId) {
-        return null;
+    public Flux<Product> getProductsBySiteId(Integer siteId) {
+        return Flux.fromIterable(repository.findProductsBySiteId(siteId))
+                .map(this::toEntity);
     }
 
-    @Override
-    public Flux<Product> getProducts() {
-        return null;
-    }
 }

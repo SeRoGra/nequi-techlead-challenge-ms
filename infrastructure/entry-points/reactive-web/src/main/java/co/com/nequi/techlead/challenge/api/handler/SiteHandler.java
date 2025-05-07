@@ -16,17 +16,18 @@ public class SiteHandler {
 
     private final SiteManagementUseCase siteManagementUseCase;
 
-    public Mono<ServerResponse> getAllSitesByBrandId(ServerRequest serverRequest) {
+    public Mono<ServerResponse> getSitesByBrandId(ServerRequest serverRequest) {
         String brandId = serverRequest.pathVariable("brandId");
         return ServerResponse.ok()
-                .body(siteManagementUseCase.getAllSitesByBrandId(Integer.valueOf(brandId)), Site.class);
+                .body(siteManagementUseCase.getSitesByBrandId(Integer.valueOf(brandId)), Site.class);
     }
 
     public Mono<ServerResponse> createSite(ServerRequest serverRequest) {
         String brandId = serverRequest.pathVariable("brandId");
         return serverRequest.bodyToMono(CreateSiteRequest.class)
-                .flatMap(createSiteRequest -> siteManagementUseCase
-                        .createSite(createSiteRequest.getName(), Integer.valueOf(brandId)))
+                .map(CreateSiteRequest::getName)
+                .flatMap(siteName -> siteManagementUseCase
+                        .createSite(siteName, Integer.valueOf(brandId)))
                 .flatMap(site -> ServerResponse.ok().bodyValue(site));
     }
 
@@ -35,8 +36,8 @@ public class SiteHandler {
         String siteId = serverRequest.pathVariable("siteId");
         return serverRequest.bodyToMono(UpdateSiteRequest.class)
                 .map(UpdateSiteRequest::getName)
-                .flatMap(name -> siteManagementUseCase.updateSite(
-                        Integer.valueOf(brandId), Integer.valueOf(siteId), name))
+                .flatMap(siteName -> siteManagementUseCase.updateSite(
+                        Integer.valueOf(brandId), Integer.valueOf(siteId), siteName))
                 .flatMap(site -> ServerResponse.ok().bodyValue(site));
     }
 

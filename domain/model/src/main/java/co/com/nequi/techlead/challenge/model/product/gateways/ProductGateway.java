@@ -7,9 +7,9 @@ import reactor.core.publisher.Mono;
 public interface ProductGateway {
 
     Mono<Product> createProduct(Product product);
-    Mono<Product> updateProductName(String productId, String name);
-    Mono<Product> updateProductStock(String productId, Integer stock);
-    Mono<Product> deleteProduct(String brandId, String siteId, String productId);
-    Flux<Product> getProducts();
+    Mono<Product> updateProduct(Product product);
+    Mono<Void> deleteProduct(Integer productId);
+    Mono<Product> getProductById(Integer productId);
+    Flux<Product> getProductsBySiteId(Integer siteId);
 
 }

@@ -37,8 +37,8 @@ public class SiteAdapter extends AdapterOperations<Site, SiteEntity, Integer, Si
     }
 
     @Override
-    public Flux<Site> getSitesByBrandId(Integer branId) {
-        return Flux.fromIterable(repository.findSitesByBrandId(branId))
+    public Flux<Site> getSitesByBrandId(Integer brandId) {
+        return Flux.fromIterable(repository.findSitesByBrandId(brandId))
                 .map(this::toEntity);
     }
 

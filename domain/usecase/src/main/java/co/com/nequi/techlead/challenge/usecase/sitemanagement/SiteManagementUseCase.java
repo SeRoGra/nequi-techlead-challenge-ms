@@ -27,19 +27,18 @@ public class SiteManagementUseCase {
                         .build()));
     }
 
-    public Mono<Site> updateSite(Integer branId, Integer siteId, String name) {
-        return getSiteById(siteId)
-                .filter(site -> branId.equals(site.getBrand().getId()))
-                .flatMap(site -> siteGateway.updateSite(site.toBuilder().name(name).build()))
+    public Mono<Site> updateSite(Integer brandId, Integer siteId, String name) {
+        return getSiteByIdAndBrandId(brandId, siteId)
+                .flatMap(site -> siteGateway.updateSite(site.toBuilder().name(name).build()));
+    }
+
+    public Mono<Site> getSiteByIdAndBrandId(Integer brandId, Integer siteId) {
+        return siteGateway.getSiteById(siteId)
+                .filter(site -> brandId.equals(site.getBrand().getId()))
                 .switchIfEmpty(Mono.error(new BadRequestException(SITE_BRAND_MISMATCH.getMessage())));
     }
 
-    public Mono<Site> getSiteById(Integer siteId) {
-        return siteGateway.getSiteById(siteId)
-                .switchIfEmpty(Mono.error(new NotFoundException(SITE_NOT_FOUND.getMessage())));
-    }
-
-    public Flux<Site> getAllSitesByBrandId(Integer brandId){
+    public Flux<Site> getSitesByBrandId(Integer brandId){
         return brandManagementUseCase.getBrandById(brandId)
                 .map(Brand::getId)
                 .flatMapMany(siteGateway::getSitesByBrandId)

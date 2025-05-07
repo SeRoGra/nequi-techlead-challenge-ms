@@ -16,11 +16,11 @@ public class ProductRouter {
     @Bean
     public RouterFunction<ServerResponse> routerProduct(ProductHandler handler) {
         return nest(path("/api"),
-                route(POST("/brands/{brandId}/sites/{siteId}/products"), handler::createProduct)
-                .andRoute(PUT("/brands/{brandId}/sites/{siteId}/products/{productId}"), handler::updateProductName)
-                .andRoute(PUT("/brands/{brandId}/sites/{siteId}/products/{productId}/stock"), handler::updateProductStock)
+                route(GET("/brands/{brandId}/sites/{siteId}/products"), handler::getProductsBySiteId)
+                .andRoute(POST("/brands/{brandId}/sites/{siteId}/products"), handler::createProduct)
+                .andRoute(PUT("/brands/{brandId}/sites/{siteId}/products/{productId}"), handler::updateProduct)
                 .andRoute(DELETE("/brands/{brandId}/sites/{siteId}/products/{productId}"), handler::deleteProduct)
-                .andRoute(GET("/brands/{brandId}/top-products-by-site"), handler::getTopProductsBySite));
+                .andRoute(GET("/brands/{brandId}/top-products-by-site"), handler::getTopProductsByBrandId));
     }
 
 }
