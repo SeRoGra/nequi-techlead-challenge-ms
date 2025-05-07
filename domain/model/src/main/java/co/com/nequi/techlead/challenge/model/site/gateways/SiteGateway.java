@@ -1,6 +1,5 @@
 package co.com.nequi.techlead.challenge.model.site.gateways;
 
-import co.com.nequi.techlead.challenge.model.brand.Brand;
 import co.com.nequi.techlead.challenge.model.site.Site;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;

@@ -3,7 +3,6 @@ package co.com.nequi.techlead.challenge.jpa.adapter;
 import co.com.nequi.techlead.challenge.jpa.entity.SiteEntity;
 import co.com.nequi.techlead.challenge.jpa.helper.AdapterOperations;
 import co.com.nequi.techlead.challenge.jpa.repository.SiteRepository;
-import co.com.nequi.techlead.challenge.model.brand.Brand;
 import co.com.nequi.techlead.challenge.model.site.Site;
 import co.com.nequi.techlead.challenge.model.site.gateways.SiteGateway;
 import lombok.extern.slf4j.Slf4j;

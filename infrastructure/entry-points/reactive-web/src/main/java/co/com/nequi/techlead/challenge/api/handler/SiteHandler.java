@@ -10,6 +10,8 @@ import org.springframework.web.reactive.function.server.ServerRequest;
 import org.springframework.web.reactive.function.server.ServerResponse;
 import reactor.core.publisher.Mono;
 
+import static co.com.nequi.techlead.challenge.api.enums.PathParam.*;
+
 @Component
 @RequiredArgsConstructor
 public class SiteHandler {
@@ -17,13 +19,13 @@ public class SiteHandler {
     private final SiteManagementUseCase siteManagementUseCase;
 
     public Mono<ServerResponse> getSitesByBrandId(ServerRequest serverRequest) {
-        String brandId = serverRequest.pathVariable("brandId");
+        String brandId = serverRequest.pathVariable(BRAND_ID.getName());
         return ServerResponse.ok()
                 .body(siteManagementUseCase.getSitesByBrandId(Integer.valueOf(brandId)), Site.class);
     }
 
     public Mono<ServerResponse> createSite(ServerRequest serverRequest) {
-        String brandId = serverRequest.pathVariable("brandId");
+        String brandId = serverRequest.pathVariable(BRAND_ID.getName());
         return serverRequest.bodyToMono(CreateSiteRequest.class)
                 .map(CreateSiteRequest::getName)
                 .flatMap(siteName -> siteManagementUseCase
@@ -32,8 +34,8 @@ public class SiteHandler {
     }
 
     public Mono<ServerResponse> updateSite(ServerRequest serverRequest) {
-        String brandId = serverRequest.pathVariable("brandId");
-        String siteId = serverRequest.pathVariable("siteId");
+        String brandId = serverRequest.pathVariable(BRAND_ID.getName());
+        String siteId = serverRequest.pathVariable(SITE_ID.getName());
         return serverRequest.bodyToMono(UpdateSiteRequest.class)
                 .map(UpdateSiteRequest::getName)
                 .flatMap(siteName -> siteManagementUseCase.updateSite(
