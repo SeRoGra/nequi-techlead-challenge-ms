@@ -1,6 +1,7 @@
 package co.com.nequi.techlead.challenge.usecase.utils;
 
 import co.com.nequi.techlead.challenge.model.brand.Brand;
+import co.com.nequi.techlead.challenge.model.site.Site;
 
 import java.util.List;
 
@@ -18,6 +19,21 @@ public class MockData {
                 createFakeBrand(1, "Subway"),
                 createFakeBrand(2, "Creeps & Waffles"),
                 createFakeBrand(3, "Domino's Pizza"));
+    }
+
+    public static Site createFakeSite(Integer id, String name, Brand brand) {
+        return Site.builder()
+                .id(id)
+                .name(name)
+                .brand(brand)
+                .build();
+    }
+
+    public static List<Site> getFakeSites(Brand brand) {
+        return List.of(
+                createFakeSite(1, "Subway St. El Poblado Medellin", brand),
+                createFakeSite(2, "Creeps & Waffles Av. 3 Norte", brand),
+                createFakeSite(3, "Domino's Pizza B Mercedes Palmira", brand));
     }
 
 }
