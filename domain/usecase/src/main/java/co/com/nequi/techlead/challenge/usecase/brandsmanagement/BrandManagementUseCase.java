@@ -27,7 +27,8 @@ public class BrandManagementUseCase {
     }
 
     public Mono<Brand> updateBrand(Integer brandId, String name) {
-        return brandGateway.updateBrand(brandId, name);
+        return getBrandById(brandId)
+                .flatMap(brand ->  brandGateway.updateBrand(brandId, name));
     }
 
 }

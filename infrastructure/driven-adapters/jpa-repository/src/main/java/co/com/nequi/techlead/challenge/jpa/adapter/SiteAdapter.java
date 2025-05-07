@@ -22,30 +22,24 @@ public class SiteAdapter extends AdapterOperations<Site, SiteEntity, Integer, Si
     }
 
     @Override
-    public Flux<Site> getAllSites() {
-        return Flux.fromIterable(findAll());
+    public Mono<Site> createSite(Site site) {
+        return Mono.defer(() -> Mono.just(save(site)));
     }
 
     @Override
-    public Mono<Site> createSite(String name, Integer brandId) {
-        return Mono.defer(() -> Mono.just(
-                save(Site.builder()
-                        .name(name)
-                        .brand(Brand.builder()
-                                .id(brandId)
-                                .build())
-                        .build())
-        ));
+    public Mono<Site> updateSite(Site site) {
+        return Mono.defer(() -> Mono.just(save(site)));
     }
 
     @Override
-    public Mono<Site> updateSite(Integer id, String name) {
-        return Mono.defer(() -> Mono.just(
-                save(Site.builder()
-                        .id(id)
-                        .name(name)
-                        .build())
-        ));
+    public Mono<Site> getSiteById(Integer siteId) {
+        return Mono.justOrEmpty(findById(siteId));
+    }
+
+    @Override
+    public Flux<Site> getSitesByBrandId(Integer branId) {
+        return Flux.fromIterable(repository.findSitesByBrandId(branId))
+                .map(this::toEntity);
     }
 
 }

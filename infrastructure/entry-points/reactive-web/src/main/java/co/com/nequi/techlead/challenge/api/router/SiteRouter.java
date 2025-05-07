@@ -16,7 +16,7 @@ public class SiteRouter {
     @Bean
     public RouterFunction<ServerResponse> routerSite(SiteHandler handler) {
         return nest(path("/api"),
-                route(GET("/brands/{brandId}/sites"), handler::getAllSites)
+                route(GET("/brands/{brandId}/sites"), handler::getAllSitesByBrandId)
                 .andRoute(POST("/brands/{brandId}/sites"), handler::createSite)
                 .andRoute(PUT("/brands/{brandId}/sites/{siteId}"), handler::updateSite));
     }

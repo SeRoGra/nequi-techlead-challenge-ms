@@ -1,6 +1,7 @@
 package co.com.nequi.techlead.challenge.api.handler;
 
 import co.com.nequi.techlead.challenge.api.dto.site.CreateSiteRequest;
+import co.com.nequi.techlead.challenge.api.dto.site.UpdateSiteRequest;
 import co.com.nequi.techlead.challenge.model.site.Site;
 import co.com.nequi.techlead.challenge.usecase.sitemanagement.SiteManagementUseCase;
 import lombok.RequiredArgsConstructor;
@@ -15,9 +16,10 @@ public class SiteHandler {
 
     private final SiteManagementUseCase siteManagementUseCase;
 
-    public Mono<ServerResponse> getAllSites(ServerRequest serverRequest) {
+    public Mono<ServerResponse> getAllSitesByBrandId(ServerRequest serverRequest) {
+        String brandId = serverRequest.pathVariable("brandId");
         return ServerResponse.ok()
-                .body(siteManagementUseCase.getAllSites(), Site.class);
+                .body(siteManagementUseCase.getAllSitesByBrandId(Integer.valueOf(brandId)), Site.class);
     }
 
     public Mono<ServerResponse> createSite(ServerRequest serverRequest) {
@@ -29,7 +31,13 @@ public class SiteHandler {
     }
 
     public Mono<ServerResponse> updateSite(ServerRequest serverRequest) {
-        return ServerResponse.ok().bodyValue("updateSite");
+        String brandId = serverRequest.pathVariable("brandId");
+        String siteId = serverRequest.pathVariable("siteId");
+        return serverRequest.bodyToMono(UpdateSiteRequest.class)
+                .map(UpdateSiteRequest::getName)
+                .flatMap(name -> siteManagementUseCase.updateSite(
+                        Integer.valueOf(brandId), Integer.valueOf(siteId), name))
+                .flatMap(site -> ServerResponse.ok().bodyValue(site));
     }
 
 }

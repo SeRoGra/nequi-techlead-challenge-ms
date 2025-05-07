@@ -1,6 +1,7 @@
 package co.com.nequi.techlead.challenge.api.config;
 
 import co.com.nequi.techlead.challenge.api.dto.exception.ErrorResponse;
+import co.com.nequi.techlead.challenge.exceptions.BadRequestException;
 import co.com.nequi.techlead.challenge.exceptions.NotFoundException;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -23,8 +24,13 @@ public class GlobalExceptionHandler implements WebExceptionHandler {
     @Override
     public Mono<Void> handle(ServerWebExchange exchange, Throwable throwable) {
         return Mono.error(throwable)
+                .onErrorResume(BadRequestException.class, ex -> this.exception(exchange, ex))
                 .onErrorResume(NotFoundException.class, ex -> this.exception(exchange, ex))
                 .onErrorResume(ex -> this.exception(exchange, ex)).then();
+    }
+
+    Mono<Void> exception(ServerWebExchange exchange, BadRequestException ex) {
+        return buildResponse(exchange, HttpStatus.BAD_REQUEST, ex);
     }
 
     Mono<Void> exception(ServerWebExchange exchange, NotFoundException ex) {

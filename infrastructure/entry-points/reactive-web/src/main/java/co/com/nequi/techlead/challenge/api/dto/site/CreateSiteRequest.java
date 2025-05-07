@@ -9,5 +9,4 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class CreateSiteRequest {
     private String name;
-    private Integer brandId;
 }

@@ -1,4 +1,5 @@
 package co.com.nequi.techlead.challenge.model.product;
+import co.com.nequi.techlead.challenge.model.site.Site;
 import lombok.*;
 
 @Getter
@@ -11,6 +12,6 @@ public class Product {
     private Integer id;
     private String name;
     private Integer stock;
-    private Integer siteId;
+    private Site site;
 
 }
