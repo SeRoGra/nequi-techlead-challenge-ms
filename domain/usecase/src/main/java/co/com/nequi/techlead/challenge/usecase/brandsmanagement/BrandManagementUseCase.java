@@ -14,7 +14,8 @@ public class BrandManagementUseCase {
     private final BrandGateway brandGateway;
 
     public Flux<Brand> getAllBrands(){
-        return brandGateway.getAllBrands();
+        return brandGateway.getAllBrands()
+                .switchIfEmpty(Mono.error(new NotFoundException(BRAND_NOT_FOUND.getMessage())));
     }
 
     public Mono<Brand> getBrandById(Integer brandId) {
