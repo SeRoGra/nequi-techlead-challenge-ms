@@ -1,5 +1,5 @@
 server:
-  port: 8081
+  port: ${SERVER_PORT:8081}
 spring:
   application:
     name: "nequi-techlead-challenge-ms"
@@ -7,10 +7,17 @@ spring:
     add-properties: false
   h2:
     console:
-      enabled: true
+      enabled: false
       path: "/h2"
   profiles:
     include: null
+  datasource:
+    url: ${MYSQL_URL:jdbc:mysql://localhost:3306/nequi_techlead_challenge_db?allowPublicKeyRetrieval=true&useSSL=false}
+    username: ${MYSQL_USERNAME:root}
+    password: ${MYSQL_PASSWORD:my-secret-pw}
+    driverClassName: "com.mysql.cj.jdbc.Driver"
+  jpa:
+    databasePlatform: "org.hibernate.dialect.MySQLDialect"
 management:
   endpoints:
     web:
@@ -22,3 +29,8 @@ management:
         enabled: true
 cors:
   allowed-origins: "http://localhost:4200,http://localhost:8080"
+logging:
+  level:
+    org.hibernate: error
+    org.hibernate.orm.deprecation: error
+    org.hibernate.orm.connections.pooling: error

@@ -1,47 +1,242 @@
-# Proyecto Base Implementando Clean Architecture
+# nequi-techlead-challenge-ms
 
-## Antes de Iniciar
+Microservicio de gestión de Franquicias, sucursales y productos como parte del desafío técnico para el rol de **Tech Lead** en Nequi.
 
-Empezaremos por explicar los diferentes componentes del proyectos y partiremos de los componentes externos, continuando con los componentes core de negocio (dominio) y por último el inicio y configuración de la aplicación.
+![Arquitectura.png](Arquitectura.png)
 
-Lee el artículo [Clean Architecture — Aislando los detalles](https://medium.com/bancolombia-tech/clean-architecture-aislando-los-detalles-4f9530f35d7a)
+Este servicio permite realizar operaciones CRUD sobre las siguientes entidades:
 
-# Arquitectura
+| Entidad Técnica | Significado en el Negocio |
+| --------------- | ------------------------- |
+| `Brand`         | Franquicia                |
+| `Site`          | Sucursal                  |
+| `Product`       | Producto                  |
+
+## Arquitectura
+
+Se implementó bajo el enfoque de Clean Architecture, utilizando el plugin [Scaffold Clean Arquitecture](https://bancolombia.github.io/scaffold-clean-architecture/docs/intro) de Bancolombia (Open Source), el cual permite estructurar el código de forma clara y mantenible, separando responsabilidades en capas bien definidas.
 
 ![Clean Architecture](https://miro.medium.com/max/1400/1*ZdlHz8B0-qu9Y-QO3AXR_w.png)
 
-## Domain
 
-Es el módulo más interno de la arquitectura, pertenece a la capa del dominio y encapsula la lógica y reglas del negocio mediante modelos y entidades del dominio.
+---
 
-## Usecases
+## 📦 Estructura del proyecto
+```
+📦nequi-techlead-challenge-ms
+┣ 📂applications
+┃ ┗ 📂app-service
+┃ ┃ ┣ 📂src
+┃ ┃ ┃ ┣ 📂main
+┃ ┃ ┃ ┃ ┣ 📂java
+┃ ┃ ┃ ┃ ┃ ┗ 📂co.com.nequi.techlead.challenge
+┃ ┃ ┃ ┃ ┃ ┃ ┣ 📂config
+┃ ┃ ┃ ┃ ┃ ┃ ┃ ┗ 📜[configs and beans]
+┃ ┃ ┃ ┃ ┃ ┃ ┗ 📜MainApplication.java
+┃ ┃ ┃ ┃ ┗ 📂resources
+┃ ┃ ┃ ┃ ┃ ┣ 📜[properties]
+┃ ┃ ┃ ┗ 📂test
+┃ ┃ ┃ ┃ ┗ 📂java
+┃ ┃ ┃ ┃ ┃ ┗ 📂co.com.nequi.techlead.challenge
+┃ ┃ ┗ 📜build.gradle
+┣ 📂deployment
+┃ ┣ 📜[Dockerfile, Pipelines as a code]
+┣ 📂domain
+┃ ┣ 📂model
+┃ ┃ ┣ 📂src
+┃ ┃ ┃ ┣ 📂main
+┃ ┃ ┃ ┃ ┗ 📂java
+┃ ┃ ┃ ┃ ┃ ┗ 📂co.com.nequi.techlead.challenge
+┃ ┃ ┃ ┗ 📂test
+┃ ┃ ┃ ┃ ┗ 📂java
+┃ ┃ ┃ ┃ ┃ ┗ 📂co.com.nequi.techlead.challenge
+┃ ┃ ┗ 📜build.gradle
+┃ ┗ 📂usecase
+┃ ┃ ┣ 📂src
+┃ ┃ ┃ ┣ 📂main
+┃ ┃ ┃ ┃ ┗ 📂java
+┃ ┃ ┃ ┃ ┃ ┗ 📂co.com.nequi.techlead.challenge
+┃ ┃ ┃ ┗ 📂test
+┃ ┃ ┃ ┃ ┗ 📂java
+┃ ┃ ┃ ┃ ┃ ┗ 📂co.com.nequi.techlead.challenge
+┃ ┃ ┃ ┃ ┃ ┃ ┗ 📂usecase
+┃ ┃ ┗ 📜build.gradle
+┣ 📂infrastructure
+┃ ┣ 📂driven-adapters
+┃ ┣ 📂entry-points
+┃ ┗ 📂helpers
+┣ 📜.gitignore
+┣ 📜build.gradle
+┣ 📜gradle.properties
+┣ 📜lombok.config
+┣ 📜main.gradle
+┣ 📜README.md
+┗ 📜settings.gradle
+```
 
-Este módulo gradle perteneciente a la capa del dominio, implementa los casos de uso del sistema, define lógica de aplicación y reacciona a las invocaciones desde el módulo de entry points, orquestando los flujos hacia el módulo de entities.
+---
 
-## Infrastructure
+## 🚀 ¿Cómo ejecutar el proyecto localmente?
 
-### Helpers
+### 1. Clona el repositorio
 
-En el apartado de helpers tendremos utilidades generales para los Driven Adapters y Entry Points.
+```bash
+git clone https://github.com/SeRoGra/nequi-techlead-challenge-ms.git
+cd nequi-techlead-challenge-ms
+```
 
-Estas utilidades no están arraigadas a objetos concretos, se realiza el uso de generics para modelar comportamientos
-genéricos de los diferentes objetos de persistencia que puedan existir, este tipo de implementaciones se realizan
-basadas en el patrón de diseño [Unit of Work y Repository](https://medium.com/@krzychukosobudzki/repository-design-pattern-bc490b256006)
+### 2. Crea y levanta la base de datos con Docker
 
-Estas clases no puede existir solas y debe heredarse su compartimiento en los **Driven Adapters**
+Asegúrate de tener Docker instalado. <br>
+Luego ejecuta el siguiente comando para iniciar un contenedor de MySQL:
+```bash
+docker run --name mysql-nequi \
+  -e MYSQL_ROOT_PASSWORD=my-secret-pw \
+  -v /var/lib/mysql \
+  -p 3306:3306 \
+  -d mysql
+```
 
-### Driven Adapters
+Esto levanta una instancia de MySQL accesible en localhost:3306.
 
-Los driven adapter representan implementaciones externas a nuestro sistema, como lo son conexiones a servicios rest,
-soap, bases de datos, lectura de archivos planos, y en concreto cualquier origen y fuente de datos con la que debamos
-interactuar.
+#### ⚙️ Ejecuta el script de creación de la base de datos <br>
 
-### Entry Points
+Una vez el contenedor esté corriendo, ejecuta el script `nequi-techlead-challenge-db.sql` para crear el schema `nequi_techlead_challenge_db` y sus respectivas tablas:
 
-Los entry points representan los puntos de entrada de la aplicación o el inicio de los flujos de negocio.
+```bash
+docker exec -i mysql-nequi \
+mysql -u root -pmy-secret-pw < ./nequi-techlead-challenge-db.sql
+```
 
-## Application
+También puedes ejecutar el script manualmente utilizando **DBeaver** u otro cliente de base de datos. Solo necesitas conectarte a la instancia local de MySQL en Docker (`localhost:3306`), usando el usuario `root` y la contraseña `my-secret-pw`, y luego ejecutar el archivo `nequi-techlead-challenge-db.sql` para crear el esquema y las tablas necesarias.
 
-Este módulo es el más externo de la arquitectura, es el encargado de ensamblar los distintos módulos, resolver las dependencias y crear los beans de los casos de use (UseCases) de forma automática, inyectando en éstos instancias concretas de las dependencias declaradas. Además inicia la aplicación (es el único módulo del proyecto donde encontraremos la función “public static void main(String[] args)”.
+---
 
-**Los beans de los casos de uso se disponibilizan automaticamente gracias a un '@ComponentScan' ubicado en esta capa.**
+### 3. Variables de entorno
+
+Puedes usar variables en tiempo de ejecución o definir un archivo `.env`. Las propiedades necesarias están en `application.yml` y usan placeholders con valores por defecto:
+
+```yaml
+spring:
+  datasource:
+    url: ${MYSQL_URL:jdbc:mysql://localhost:3306/nequi_techlead_challenge_db?allowPublicKeyRetrieval=true&useSSL=false}
+    username: ${MYSQL_USERNAME:root}
+    password: ${MYSQL_PASSWORD:my-secret-pw}
+```
+
+#### Si deseas sobrescribirlas:
+
+```bash
+export MYSQL_URL=jdbc:mysql://localhost:3306/nequi_techlead_challenge_db
+export MYSQL_USERNAME=root
+export MYSQL_PASSWORD=my-secret-pw
+```
+
+---
+
+### 4. Compila y ejecuta el proyecto
+
+```bash
+./gradlew clean build
+./gradlew :app-service:bootRun
+```
+El servicio quedará expuesto en el puerto `8081`.
+
+---
+
+## 🔁 Endpoints expuestos
+
+Si estás usando herramientas como **Postman** o **Bruno**, puedes importar directamente la colección `nequi-techlead-challenge-ms.postman.json` o `nequi-techlead-challenge-ms.bruno`.  
+Estas colecciones incluyen todos los endpoints expuestos por el servicio, organizados por entidad (`Brand`, `Site` y `Product`) y con ejemplos preconfigurados de:
+
+- Peticiones GET, POST, PUT y DELETE.
+- Cuerpos de solicitud (`body`) listos para usar.
+- Headers y parámetros necesarios para cada endpoint.
+
+Esto te permitirá **probar rápidamente las funcionalidades** del microservicio sin necesidad de escribir manualmente las solicitudes.
+
+
+### Brands (Franquicias)
+
+✅ `GET /api/brands` → Listar todas las Franquicias <br>
+✅`POST /api/brands` → Crear Franquicia `{ "name": "..." }` <br>
+✅`PUT /api/brands/{brandId}` → Actualizar Franquicia <br>
+❌ `DELETE /api/brands?onCascade=true|false` _#TODO_
+
+### Sites (Sucursales)
+
+✅`GET /api/brands/{brandId}/sites` → Listar sucursales por franquicia <br>
+✅`POST /api/brands/{brandId}/sites` → Crear sucursal `{ "name": "..." }` <br>
+✅`PUT /api/brands/{brandId}/sites/{siteId}` → Actualizar sucursal <br>
+❌ `DELETE /api/brands/{brandId}/sites/{siteId}?onCascade=true|false` _#TODO_
+
+### Products (Productos)
+
+✅`GET /api/brands/{brandId}/sites/{siteId}/products` → Listar productos <br>
+✅`POST /api/brands/{brandId}/sites/{siteId}/products` → Crear producto `{ "name": "...", "stock": 10 }` <br>
+✅`PUT /api/brands/{brandId}/sites/{siteId}/products/{productId}` → Actualizar producto <br>
+✅`DELETE /api/brands/{brandId}/sites/{siteId}/products/{productId}` → Eliminar producto <br>
+✅`GET /api/brands/{brandId}/top-products-by-site` → Producto con mayor stock por sitio <br>
+
+---
+
+## ✅ Validaciones
+
+- Todos los `path params` son validados para ser enteros positivos.
+- Los `request bodies` se validan con `javax.validation` (e.g., `@NotBlank`, `@NotNull`, `@Min`).
+- Las respuestas de error usan un wrapper tipo:
+
+```json
+{
+  "code": "BAD_REQUEST",
+  "message": "Field X is required",
+  "path": "/api/..."
+}
+```
+
+---
+
+## 🧪 Pruebas
+
+El proyecto contiene pruebas unitarias para:
+
+- Casos de uso (`BrandManagementUseCase`, `SiteManagementUseCase`, `ProductManagementUseCase`)
+- Handlers (`BrandHandler`, `SiteHandler`, `ProductHandler`)
+- Validaciones y controladores de errores (`GlobalExceptionHandler`)
+
+Ejecútalas con:
+
+```bash
+./gradlew test
+```
+
+---
+
+## 🛠️ Tecnologías usadas
+
+- Java 21
+- Spring Boot 3 (WebFlux, Data JPA)
+- HikariCP
+- Reactor
+- JUnit 5 + Mockito
+- Hibernate Validator
+- MySQL
+- Docker
+- AWS
+- Terraform
+
+---
+
+## 📌 Notas
+
+- La arquitectura sigue principios de clean architecture (entry points, use cases, domain, infrastructure).
+- El sistema es completamente reactivo.
+- La validación centralizada mejora el manejo de errores y respuestas al cliente.
+- El servicio esta siendo desplegado en [Dockerhub](https://hub.docker.com/r/serogra/nequi-techlead-challenge-ms/tags) usando un pipeline de [GitHub Actions](https://github.com/SeRoGra/nequi-techlead-challenge-ms/actions).
+
+---
+
+## 👨‍💻 Autor
+
+Sebastián Rodríguez Granja <br>
+Desafío técnico Nequi – Tech Lead
