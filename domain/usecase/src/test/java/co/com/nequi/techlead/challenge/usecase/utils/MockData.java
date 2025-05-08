@@ -1,6 +1,7 @@
 package co.com.nequi.techlead.challenge.usecase.utils;
 
 import co.com.nequi.techlead.challenge.model.brand.Brand;
+import co.com.nequi.techlead.challenge.model.product.Product;
 import co.com.nequi.techlead.challenge.model.site.Site;
 
 import java.util.List;
@@ -36,4 +37,12 @@ public class MockData {
                 createFakeSite(3, "Domino's Pizza B Mercedes Palmira", brand));
     }
 
+    public static Product createFakeProduct(Integer id, String name, Integer stock, Site site) {
+        return Product.builder()
+                .id(id)
+                .name(name)
+                .site(site)
+                .stock(stock)
+                .build();
+    }
 }

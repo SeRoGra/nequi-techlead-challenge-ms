@@ -30,7 +30,6 @@ public class ProductManagementUseCase {
                 .flatMap(productGateway::createProduct);
     }
 
-
     public Mono<Product> updateProduct(UpdateProductCommand command) {
         return getProductById(command.getProductId())
                 .flatMap(product ->  checkIfProductBelongToSite(

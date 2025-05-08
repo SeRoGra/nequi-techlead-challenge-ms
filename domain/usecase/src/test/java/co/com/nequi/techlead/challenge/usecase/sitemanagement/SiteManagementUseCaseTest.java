@@ -37,12 +37,15 @@ class SiteManagementUseCaseTest {
 
     @Test
     void createSite_ShouldReturnCreatedSite() {
+        // Arrange
         Brand brand = MockData.createFakeBrand(1, "Creeps & Waffles");
         Site site = MockData.createFakeSite(1, "C&W B El Poblado Medellin", brand);
 
+        // Act
         given(brandManagementUseCase.getBrandById(1)).willReturn(Mono.just(brand));
         given(siteGateway.createSite(any(Site.class))).willReturn(Mono.just(site));
 
+        // Assert
         StepVerifier.create(siteManagementUseCase.createSite("C&W B El Poblado Medellin", 1))
                 .expectNext(site)
                 .verifyComplete();
@@ -50,13 +53,16 @@ class SiteManagementUseCaseTest {
 
     @Test
     void updateSite_ShouldReturnUpdatedSite() {
+        // Arrange
         Brand brand = MockData.createFakeBrand(1, "Creeps & Waffles");
         Site site = MockData.createFakeSite(2, "OldSite", brand);
         Site updatedSite = site.toBuilder().name("UpdatedSite").build();
 
+        // Act
         given(siteGateway.getSiteById(2)).willReturn(Mono.just(site));
         given(siteGateway.updateSite(any(Site.class))).willReturn(Mono.just(updatedSite));
 
+        // Assert
         StepVerifier.create(siteManagementUseCase.updateSite(1, 2, "UpdatedSite"))
                 .expectNext(updatedSite)
                 .verifyComplete();
@@ -64,11 +70,14 @@ class SiteManagementUseCaseTest {
 
     @Test
     void updateSite_ShouldReturnErrorWhenMismatch() {
+        // Arrange
         Brand brand = MockData.createFakeBrand(2, "Subway"); // site brandId = 2, input = 1
         Site site = MockData.createFakeSite(3, "Site", brand);
 
+        // Act
         given(siteGateway.getSiteById(3)).willReturn(Mono.just(site));
 
+        // Assert
         StepVerifier.create(siteManagementUseCase.updateSite(1, 3, "NewName"))
                 .expectErrorMatches(e -> e instanceof BadRequestException &&
                         e.getMessage().equals(SITE_BRAND_MISMATCH.getMessage()))
@@ -77,12 +86,15 @@ class SiteManagementUseCaseTest {
 
     @Test
     void getSitesByBrandId_ShouldReturnSites() {
+        // Arrange
         Brand brand = MockData.createFakeBrand(1, "Creeps & Waffles");
         List<Site> sites = MockData.getFakeSites(brand);
 
+        // Act
         given(brandManagementUseCase.getBrandById(1)).willReturn(Mono.just(brand));
         given(siteGateway.getSitesByBrandId(1)).willReturn(Flux.fromIterable(sites));
 
+        // Assert
         StepVerifier.create(siteManagementUseCase.getSitesByBrandId(1))
                 .expectNextSequence(sites)
                 .verifyComplete();
@@ -90,11 +102,14 @@ class SiteManagementUseCaseTest {
 
     @Test
     void getSitesByBrandId_ShouldReturnErrorWhenNoSites() {
+        // Arrange
         Brand brand = MockData.createFakeBrand(1, "Creeps & Waffles");
 
+        // Act
         given(brandManagementUseCase.getBrandById(1)).willReturn(Mono.just(brand));
         given(siteGateway.getSitesByBrandId(1)).willReturn(Flux.empty());
 
+        // Assert
         StepVerifier.create(siteManagementUseCase.getSitesByBrandId(1))
                 .expectErrorMatches(e -> e instanceof NotFoundException &&
                         e.getMessage().equals(SITE_NOT_FOUND.getMessage()))

@@ -2,8 +2,7 @@ package co.com.nequi.techlead.challenge.model.product;
 import co.com.nequi.techlead.challenge.model.site.Site;
 import lombok.*;
 
-@Getter
-@Setter
+@Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder(toBuilder = true)
