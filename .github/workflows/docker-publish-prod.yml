@@ -54,19 +54,15 @@ jobs:
 
       - name: SSH into EC2 and deploy Docker container
         run: |
-          ssh -o StrictHostKeyChecking=no -i ~/.ssh/id_rsa ubuntu@${{ secrets.AWS_EC2_PUBLIC_DNS }} << 'EOF'
-            # Detener y eliminar el contenedor anterior si existe
+          ssh -o StrictHostKeyChecking=no -i ~/.ssh/id_rsa ubuntu@${{ secrets.AWS_EC2_PUBLIC_DNS }} "
             docker stop nequi-techlead-challenge-ms-instance || true
             docker rm nequi-techlead-challenge-ms-instance || true
-          
-            # Descargar la última versión de la imagen
             docker pull ${{ secrets.DOCKERHUB_USERNAME }}/nequi-techlead-challenge-ms:latest
           
-            # Ejecutar el contenedor
             docker run -d --name nequi-techlead-challenge-ms-instance -p 8080:8080 \
               -e SERVER_PORT=${{ secrets.SERVER_PORT }} \
-              -e MYSQL_URL=${{ secrets.AWS_DB_URL }} \
-              -e MYSQL_USERNAME=${{ secrets.AWS_DB_USER }} \
-              -e MYSQL_PASSWORD=${{ secrets.AWS_DB_PASSWORD }} \
+              -e MYSQL_URL='${{ secrets.AWS_DB_URL }}' \
+              -e MYSQL_USERNAME='${{ secrets.AWS_DB_USER }}' \
+              -e MYSQL_PASSWORD='${{ secrets.AWS_DB_PASSWORD }}' \
               ${{ secrets.DOCKERHUB_USERNAME }}/nequi-techlead-challenge-ms:latest
-          EOF
+          "
