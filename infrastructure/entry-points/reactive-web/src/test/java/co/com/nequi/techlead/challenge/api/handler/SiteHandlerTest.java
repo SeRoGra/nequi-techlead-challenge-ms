@@ -5,6 +5,8 @@ import co.com.nequi.techlead.challenge.api.dto.site.UpdateSiteRequest;
 import co.com.nequi.techlead.challenge.model.brand.Brand;
 import co.com.nequi.techlead.challenge.model.site.Site;
 import co.com.nequi.techlead.challenge.usecase.sitemanagement.SiteManagementUseCase;
+import jakarta.validation.Validation;
+import jakarta.validation.Validator;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -34,7 +36,8 @@ class SiteHandlerTest {
     @BeforeEach
     void setUp() {
         MockitoAnnotations.openMocks(this);
-        SiteHandler handler = new SiteHandler(siteManagementUseCase);
+        Validator validator = Validation.buildDefaultValidatorFactory().getValidator();
+        SiteHandler handler = new SiteHandler(validator, siteManagementUseCase);
         RouterFunction<ServerResponse> router = route()
                 .GET("/brands/{brandId}/sites", handler::getSitesByBrandId)
                 .POST("/brands/{brandId}/sites", handler::createSite)

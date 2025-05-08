@@ -5,6 +5,7 @@ import co.com.nequi.techlead.challenge.api.dto.product.UpdateProductRequest;
 import co.com.nequi.techlead.challenge.model.product.Product;
 import co.com.nequi.techlead.challenge.model.product.dto.UpdateProductCommand;
 import co.com.nequi.techlead.challenge.usecase.productmanagement.ProductManagementUseCase;
+import jakarta.validation.Validator;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.server.ServerRequest;
@@ -13,17 +14,19 @@ import reactor.core.publisher.Mono;
 
 import static co.com.nequi.techlead.challenge.api.enums.PathParam.*;
 import static co.com.nequi.techlead.challenge.api.utils.PathParamValidator.validateRequiredParam;
+import static co.com.nequi.techlead.challenge.api.utils.RequestBodyValidator.validateBody;
 
 @Component
 @RequiredArgsConstructor
 public class ProductHandler {
 
+    private final Validator validator;
     private final ProductManagementUseCase productManagementUseCase;
 
     public Mono<ServerResponse> createProduct(ServerRequest serverRequest) {
         Integer brandId = validateRequiredParam(BRAND_ID.getName(), serverRequest.pathVariable(BRAND_ID.getName()));
         Integer siteId = validateRequiredParam(SITE_ID.getName(), serverRequest.pathVariable(SITE_ID.getName()));
-        return serverRequest.bodyToMono(CreateProductRequest.class)
+        return validateBody(serverRequest.bodyToMono(CreateProductRequest.class), validator)
                 .flatMap(createProductRequest -> productManagementUseCase.createProduct(
                         brandId, siteId, createProductRequest.getName(), createProductRequest.getStock()))
                 .flatMap(product -> ServerResponse.ok().bodyValue(product));
@@ -33,7 +36,7 @@ public class ProductHandler {
         Integer brandId = validateRequiredParam(BRAND_ID.getName(), serverRequest.pathVariable(BRAND_ID.getName()));
         Integer siteId = validateRequiredParam(SITE_ID.getName(), serverRequest.pathVariable(SITE_ID.getName()));
         Integer productId = validateRequiredParam(PRODUCT_ID.getName(), serverRequest.pathVariable(PRODUCT_ID.getName()));
-        return serverRequest.bodyToMono(UpdateProductRequest.class)
+        return validateBody(serverRequest.bodyToMono(UpdateProductRequest.class), validator)
                 .flatMap(updateProductRequest -> productManagementUseCase.updateProduct(
                         UpdateProductCommand.builder()
                                 .brandId(brandId)

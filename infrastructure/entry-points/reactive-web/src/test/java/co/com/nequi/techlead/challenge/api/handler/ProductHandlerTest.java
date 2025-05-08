@@ -8,10 +8,11 @@ import co.com.nequi.techlead.challenge.model.product.Product;
 import co.com.nequi.techlead.challenge.model.product.dto.UpdateProductCommand;
 import co.com.nequi.techlead.challenge.model.site.Site;
 import co.com.nequi.techlead.challenge.usecase.productmanagement.ProductManagementUseCase;
+import jakarta.validation.Validation;
+import jakarta.validation.Validator;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -30,14 +31,15 @@ import static org.springframework.web.reactive.function.server.RouterFunctions.r
 class ProductHandlerTest {
 
     @Mock
-    ProductManagementUseCase useCase;
+    ProductManagementUseCase productManagementUseCase;
 
     WebTestClient webTestClient;
 
     @BeforeEach
     void setUp() {
         MockitoAnnotations.openMocks(this);
-        ProductHandler handler = new ProductHandler(useCase);
+        Validator validator = Validation.buildDefaultValidatorFactory().getValidator();
+        ProductHandler handler = new ProductHandler(validator, productManagementUseCase);
         RouterFunction<ServerResponse> router = route()
                 .GET("/api/brands/{brandId}/sites/{siteId}/products", handler::getProductsBySiteId)
                 .POST("/api/brands/{brandId}/sites/{siteId}/products", handler::createProduct)
@@ -54,7 +56,7 @@ class ProductHandlerTest {
         Site site = MockData.createFakeSite(1, "SiteName", brand);
         List<Product> products = MockData.getFakeProducts(site);
 
-        given(useCase.getProductsByBrandIdAndSiteId(1, 1)).willReturn(Flux.fromIterable(products));
+        given(productManagementUseCase.getProductsByBrandIdAndSiteId(1, 1)).willReturn(Flux.fromIterable(products));
 
         webTestClient.get()
                 .uri("/api/brands/1/sites/1/products")
@@ -71,7 +73,7 @@ class ProductHandlerTest {
         Site site = MockData.createFakeSite(1, "Site", brand);
         Product product = MockData.createFakeProduct(1, "Product A", 10, site);
 
-        given(useCase.createProduct(1, 1, request.getName(), request.getStock())).willReturn(Mono.just(product));
+        given(productManagementUseCase.createProduct(1, 1, request.getName(), request.getStock())).willReturn(Mono.just(product));
 
         webTestClient.post()
                 .uri("/api/brands/1/sites/1/products")
@@ -97,7 +99,7 @@ class ProductHandlerTest {
                 .stock(request.getStock())
                 .build();
 
-        given(useCase.updateProduct(command))
+        given(productManagementUseCase.updateProduct(command))
                 .willReturn(Mono.just(product));
 
         webTestClient.put()
@@ -111,7 +113,7 @@ class ProductHandlerTest {
 
     @Test
     void deleteProduct_ShouldReturnNoContent() {
-        given(useCase.deleteProduct(1, 1, 1)).willReturn(Mono.empty());
+        given(productManagementUseCase.deleteProduct(1, 1, 1)).willReturn(Mono.empty());
 
         webTestClient.delete()
                 .uri("/api/brands/1/sites/1/products/1")
@@ -125,7 +127,7 @@ class ProductHandlerTest {
         Site site = MockData.createFakeSite(1, "Site", brand);
         Product topProduct = MockData.createFakeProduct(1, "Top", 100, site);
 
-        given(useCase.getTopProductsByBrandId(1)).willReturn(Flux.just(topProduct));
+        given(productManagementUseCase.getTopProductsByBrandId(1)).willReturn(Flux.just(topProduct));
 
         webTestClient.get()
                 .uri("/api/brands/1/top-products-by-site")

@@ -4,6 +4,8 @@ import co.com.nequi.techlead.challenge.api.dto.brand.CreateBrandRequest;
 import co.com.nequi.techlead.challenge.api.dto.brand.UpdateBrandRequest;
 import co.com.nequi.techlead.challenge.model.brand.Brand;
 import co.com.nequi.techlead.challenge.usecase.brandsmanagement.BrandManagementUseCase;
+import jakarta.validation.Validation;
+import jakarta.validation.Validator;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -23,14 +25,15 @@ import static org.springframework.web.reactive.function.server.RouterFunctions.r
 class BrandHandlerTest {
 
     @Mock
-    private BrandManagementUseCase useCase;
+    private BrandManagementUseCase brandManagementUseCase;
 
     private WebTestClient webTestClient;
 
     @BeforeEach
     void setUp() {
         MockitoAnnotations.openMocks(this);
-        BrandHandler handler = new BrandHandler(useCase);
+        Validator validator = Validation.buildDefaultValidatorFactory().getValidator();
+        BrandHandler handler = new BrandHandler(validator, brandManagementUseCase);
         RouterFunction<ServerResponse> router = route()
                 .GET("/brands", handler::getAllBrands)
                 .POST("/brands", handler::createBrand)
@@ -41,8 +44,8 @@ class BrandHandlerTest {
 
     @Test
     void getAllBrands_ShouldReturnList() {
-        Brand brand = new Brand(1, "Nequi");
-        given(useCase.getAllBrands()).willReturn(Flux.just(brand));
+        Brand brand = new Brand(1, "Creeps & Waffles");
+        given(brandManagementUseCase.getAllBrands()).willReturn(Flux.just(brand));
 
         webTestClient.get()
                 .uri("/brands")
@@ -55,9 +58,9 @@ class BrandHandlerTest {
 
     @Test
     void createBrand_ShouldReturnBrand() {
-        String name = "Nequi";
+        String name = "Creeps & Waffles";
         Brand brand = new Brand(1, name);
-        given(useCase.createBrand(name)).willReturn(Mono.just(brand));
+        given(brandManagementUseCase.createBrand(name)).willReturn(Mono.just(brand));
 
         webTestClient.post()
                 .uri("/brands")
@@ -71,9 +74,9 @@ class BrandHandlerTest {
     @Test
     void updateBrand_ShouldReturnUpdatedBrand() {
         Integer brandId = 1;
-        String newName = "Updated";
+        String newName = "Domino's Pizza";
         Brand updated = new Brand(brandId, newName);
-        given(useCase.updateBrand(brandId, newName)).willReturn(Mono.just(updated));
+        given(brandManagementUseCase.updateBrand(brandId, newName)).willReturn(Mono.just(updated));
 
         webTestClient.put()
                 .uri("/brands/{brandId}", brandId)
